@@ -48,6 +48,22 @@ namespace Auth_Service
             return TypedResults.Json(new Token { access_token = selectedUser.access_token });
         }
 
+        public async Task<Results<JsonHttpResult<int>, UnauthorizedHttpResult>> IdFromToken(AuthDb db, HttpContext context)
+        {
+            var authHeader = context.Request.Headers.Authorization.ToString();
+
+            if (!authHeader.StartsWith("Bearer "))
+                return TypedResults.Unauthorized();
+
+            var token = authHeader.Replace("Bearer ", "");
+
+            var user = await db.Users.Where(e => e.access_token == token).FirstOrDefaultAsync();
+            if (user == null || user.locked_out || user.token_expiry < DateOnly.FromDateTime(DateTime.Now))
+                return TypedResults.Unauthorized();
+
+            return TypedResults.Json(user.id);
+        }
+
         //PLACEHOLDER FOR DEVELOPMENT
         public async Task<Results<Created<User>, Conflict>> Register(AuthDb db, UserDTO u)
         {

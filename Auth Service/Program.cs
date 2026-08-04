@@ -32,13 +32,8 @@ using (var scope = app.Services.CreateScope())
 
 Auth auth = new Auth();
 
-app.MapPost("/", async Task<Results<JsonHttpResult<Token>, UnauthorizedHttpResult>> (UserDTO userdto, AuthDb db) => {
-    return await auth.Authenticate(db, userdto);
-}).Produces<Token>(200).Produces(401);
-
-app.MapPost("/register", async Task<Results<Created<User>, Conflict>> (UserDTO userdto, AuthDb db) =>
-{
-    return await auth.Register(db, userdto);
-});
+app.MapGet("/", auth.IdFromToken).Produces<int>(200).Produces(401);
+app.MapPost("/", auth.Authenticate).Produces<Token>(200).Produces(401);
+app.MapPost("/register", auth.Register);
 
 app.Run();
