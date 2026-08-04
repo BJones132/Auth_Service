@@ -1,0 +1,24 @@
+@Auth_Service_HostAddress = https://localhost:7114
+
+GET {{Auth_Service_HostAddress}}/
+
+###
+
+POST {{Auth_Service_HostAddress}}/
+Content-Type: application/json
+
+{
+  "Username":"Hellcat",
+  "Password":"123"
+}
+
+###
+POST {{Auth_Service_HostAddress}}/register
+Content-Type: application/json
+
+{
+  "Username":"Hellcat",
+  "Password":"123"
+}
+
+###

@@ -1,0 +1,44 @@
+using Auth_Service;
+using Auth_Service.Data;
+using Auth_Service.Data.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<AuthDb>(opt => 
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("financedb"))
+);
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
+app.UseHsts();
+app.UseHttpsRedirection();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbCtx = scope.ServiceProvider.GetRequiredService<AuthDb>();
+    dbCtx.Database.EnsureCreated();
+}
+
+Auth auth = new Auth();
+
+app.MapPost("/", async Task<Results<JsonHttpResult<Token>, UnauthorizedHttpResult>> (UserDTO userdto, AuthDb db) => {
+    return await auth.Authenticate(db, userdto);
+}).Produces<Token>(200).Produces(401);
+
+app.MapPost("/register", async Task<Results<Created<UserDTO>, Conflict>> (UserDTO userdto, AuthDb db) =>
+{
+    return await auth.Register(db, userdto);
+});
+
+app.Run();
