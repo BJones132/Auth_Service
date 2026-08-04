@@ -36,7 +36,7 @@ app.MapPost("/", async Task<Results<JsonHttpResult<Token>, UnauthorizedHttpResul
     return await auth.Authenticate(db, userdto);
 }).Produces<Token>(200).Produces(401);
 
-app.MapPost("/register", async Task<Results<Created<UserDTO>, Conflict>> (UserDTO userdto, AuthDb db) =>
+app.MapPost("/register", async Task<Results<Created<User>, Conflict>> (UserDTO userdto, AuthDb db) =>
 {
     return await auth.Register(db, userdto);
 });

@@ -7,7 +7,11 @@
       "containerImage": "postgres:17",
       "resourceId": null,
       "type": "postgresql.container",
-      "connectionId": "ConnectionStrings:DatabaseConnection"
+      "connectionId": "ConnectionStrings:financedb"
+    },
+    "secrets1": {
+      "type": "secrets.user",
+      "dynamicId": null
     }
   }
 }

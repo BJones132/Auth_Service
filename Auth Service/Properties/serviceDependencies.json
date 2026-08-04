@@ -3,6 +3,9 @@
     "postgresql1": {
       "type": "postgresql",
       "connectionId": "ConnectionStrings:financedb"
+    },
+    "secrets1": {
+      "type": "secrets"
     }
   }
 }

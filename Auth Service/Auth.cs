@@ -49,23 +49,21 @@ namespace Auth_Service
         }
 
         //PLACEHOLDER FOR DEVELOPMENT
-        public async Task<Results<Created<UserDTO>, Conflict>> Register(AuthDb db, UserDTO u)
+        public async Task<Results<Created<User>, Conflict>> Register(AuthDb db, UserDTO u)
         {
+            if(await db.Users.Where(e=>e.username == u.username).FirstOrDefaultAsync() != null)
+                return TypedResults.Conflict();
+
             User createdUser = new User
             {
                 username = u.username,
                 password = crypt.HashPassword(u.password)
             };
 
-            try { 
-                db.Users.Add(createdUser); 
-                await db.SaveChangesAsync();
-            }catch(DbUpdateException ex)
-            {
-                return TypedResults.Conflict();
-            }
+            db.Users.Add(createdUser); 
+            await db.SaveChangesAsync();
 
-            return TypedResults.Created($"/register/{u.username}", u);
+            return TypedResults.Created($"/register/{u.username}", createdUser);
         }
     }
 }

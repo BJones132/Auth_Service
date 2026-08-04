@@ -1,5 +1,8 @@
-﻿namespace Auth_Service.Data.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Auth_Service.Data.Models
 {
+    [Index(nameof(username), IsUnique = true)]
     public class User
     {
         public int id { get; set; }
