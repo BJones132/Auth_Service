@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Auth_Service
 {
-    public class Crypto
+    public static class Crypto
     {
         private const int _saltSize = 16;
         private const int _hashSize = 32;
@@ -12,7 +12,7 @@ namespace Auth_Service
         private const int _iterations = 4;
         private const int _memSize = 1024 * 1024;
 
-        public string HashPassword(string pass)
+        public static string HashPassword(string pass)
         {
             if (pass == null)
                 throw new ArgumentException();
@@ -32,7 +32,7 @@ namespace Auth_Service
             return Convert.ToBase64String(saltHash);
         }
 
-        private byte[] HashPassword(string pass, byte[] salt) {
+        private static byte[] HashPassword(string pass, byte[] salt) {
             var argon2 = new Argon2id(Encoding.UTF8.GetBytes(pass))
             {
                 Salt = salt,
@@ -44,7 +44,7 @@ namespace Auth_Service
             return argon2.GetBytes(_hashSize);
         }
 
-        public bool VerifyPassword(string pass, string hashedPass)
+        public static bool VerifyPassword(string pass, string hashedPass)
         {
             byte[] saltHash = Convert.FromBase64String(hashedPass);
 

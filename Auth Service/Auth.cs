@@ -5,21 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auth_Service
 {
-    public class Auth
+    public static class Auth
     {
-        private Crypto crypt;
-        public Auth() {
-            crypt = new Crypto();
-        }
-
-        public async Task<Results<JsonHttpResult<Token>, UnauthorizedHttpResult>> Authenticate(AuthDb db, UserDTO u)
+        public static async Task<Results<JsonHttpResult<Token>, UnauthorizedHttpResult>> Authenticate(AuthDb db, UserDTO u)
         {
             var selectedUser = await db.Users.Where(e => e.username == u.username).FirstOrDefaultAsync();
 
             if (selectedUser == null || selectedUser.locked_out || u.password == string.Empty)
                 return TypedResults.Unauthorized();
 
-            if(!crypt.VerifyPassword(u.password, selectedUser.password))
+            if(!Crypto.VerifyPassword(u.password, selectedUser.password))
             {
                 selectedUser.failed_attempts += 1;
                 if (selectedUser.failed_attempts >= 3)
@@ -48,7 +43,7 @@ namespace Auth_Service
             return TypedResults.Json(new Token { access_token = selectedUser.access_token });
         }
 
-        public async Task<Results<JsonHttpResult<int>, UnauthorizedHttpResult>> IdFromToken(AuthDb db, HttpContext context)
+        public static async Task<Results<JsonHttpResult<int>, UnauthorizedHttpResult>> IdFromToken(AuthDb db, HttpContext context)
         {
             var authHeader = context.Request.Headers.Authorization.ToString();
 
@@ -65,7 +60,7 @@ namespace Auth_Service
         }
 
         //PLACEHOLDER FOR DEVELOPMENT
-        public async Task<Results<Created<User>, Conflict>> Register(AuthDb db, UserDTO u)
+        public static async Task<Results<Created<User>, Conflict>> Register(AuthDb db, UserDTO u)
         {
             if(await db.Users.Where(e=>e.username == u.username).FirstOrDefaultAsync() != null)
                 return TypedResults.Conflict();
@@ -73,7 +68,7 @@ namespace Auth_Service
             User createdUser = new User
             {
                 username = u.username,
-                password = crypt.HashPassword(u.password)
+                password = Crypto.HashPassword(u.password)
             };
 
             db.Users.Add(createdUser); 
