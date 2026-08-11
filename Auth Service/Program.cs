@@ -16,9 +16,10 @@ builder.Services.AddDbContext<AuthDb>(opt =>
 
 var app = builder.Build();
 
+app.MapOpenApi();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.MapScalarApiReference();
 }
 
@@ -41,8 +42,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.MapGet("/", Auth.IdFromToken).Produces<int>(200).Produces(401);
-app.MapPost("/", Auth.Authenticate).Produces<Token>(200).Produces(401);
-app.MapPost("/register", Auth.Register);
+app.MapGet("/id", Auth.IdFromToken).Produces<int>(200).Produces(401).WithName("Get ID");
+app.MapPost("/authenticate", Auth.Authenticate).Produces<Token>(200).Produces(401).WithName("Authenticate");
+app.MapPost("/register", Auth.Register).WithName("Register User");
 
 app.Run();
