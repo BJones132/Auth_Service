@@ -18,7 +18,7 @@ Generating a certificate can be done in many ways but I will show the `dotnet de
 First, you will need to open a terminal in `C:\Users\<CURRENT_USER>\AppData\Roaming\ASP.NET\Https`.\
 Run the command `dotnet dev-certs https -ep ./Auth_Service.pfx -p <PASSWORD>`. Replace <PASSWORD> with a password of your choice. It is recommended to use a powershell new-guid or similar for a secure password.\
 Next, Run `dotnet dev-certs https -t` to trust the developer certificate.
-For the changes to come into effect, your browser must be restarted.
+For the changes to come into effect, your browser must be restarted. (I recommend completing the next steps and restarting the browser just prior to connection to the API)
 
 ### Step 2
 Edit the EXAMPLE.env file to match your needs. The FINANCEDB variable needs your postgres hostname/ip address, a username (by default "postgres") and a database name. Depending on how your postgres database was set up, a Password field may need to be added with the corresponding password.\
