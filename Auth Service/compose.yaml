@@ -1,0 +1,15 @@
+﻿services:
+  auth_service:
+    build: .
+    ports:
+      - "${HTTP_HOST_PORT}:5010"
+      - "${HTTPS_HOST_PORT}:5000"
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5010
+      - ASPNETCORE_HTTPS_PORTS=5000
+      - ConnectionStrings:financedb=${FINANCEDB}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_PATH}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PASSWORD}
+    volumes:
+      - ${APPDATA}/ASP.NET/Https/:/root/.aspnet/https/
