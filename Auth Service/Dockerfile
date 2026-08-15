@@ -11,6 +11,6 @@ COPY --from=build /App/out .
 
 EXPOSE 5000
 EXPOSE 5010
-VOLUME /home/App/.aspnet/https/ /root/.microsoft/usersecrets/
+VOLUME /home/App/.aspnet/https/
 
 ENTRYPOINT ["dotnet", "Auth_Service.dll"]
