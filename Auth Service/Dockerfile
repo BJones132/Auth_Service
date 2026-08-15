@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+﻿FROM dhi.io/dotnet:10-sdk-alpine AS build
 WORKDIR /App
 
 COPY . ./
